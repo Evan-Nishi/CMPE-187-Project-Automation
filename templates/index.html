@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Case Viewer</title>
+    <style>
+        body {
+            background-color: #343541;  /* ChatGPT dark gray */
+            color: #d1d5db;             /* Light text */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .image-section {
+            flex-shrink: 0;
+        }
+
+        #case-img {
+            border: 4px solid black;
+            max-width: 500px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .response-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 500px;
+        }
+
+        .result-block {
+            background-color: #444654;
+            padding: 16px;
+            border-radius: 10px;
+            border: 2px solid #888;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .result-container {
+            border: 1px solid #888;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #3a3b47;
+        }
+
+        .response-block {
+            white-space: pre-wrap;
+            display: inline-block;
+        }
+
+        .correct {
+            font-size: 1.2em;
+            display: block;
+            margin-top: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="main-container">
+        
+        <div class="image-section">
+            <h1>Current Case Image</h1>
+            {% if image_file %}
+                <img id="case-img" src="{{ url_for('static', filename=image_file) }}" alt="Case Image">
+            {% else %}
+                <p>No image loaded yet.</p>
+            {% endif %}
+            <h3>Current file: {{ current_case.get('fname', '') }}</h3>
+        </div>
+
+        <div class="response-section">
+            <!-- GPT Response -->
+            <div class="result-block">
+                <div class="result-header">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/2048px-ChatGPT_logo.svg.png" alt="ChatGPT Logo" style="height: 40px;">
+                    <h2>GPT Response</h2>
+                </div>
+                <div class="result-container">
+                    <span class="response-block">
+                        {{ current_case.get('gpt_res', 'No GPT result.') }}
+                    </span>
+                </div>
+                <span class="correct">
+                    {% if current_case.get('gpt_correct') == 'True' %}
+                        Correct: ✅
+                    {% elif current_case.get('gpt_correct') == 'False' %}
+                        Incorrect: ❌
+                    {% endif %}
+                </span>
+            </div>
+
+            <!-- Seek Response -->
+            <div class="result-block">
+                <div class="result-header">
+                    <img src="https://cdn.deepseek.com/logo.png?x-image-process=image%2Fresize%2Cw_1920" alt="DeepSeek Logo" style="height: 40px;">
+                    <h2>Seek Response</h2>
+                </div>
+                <div class="result-container">
+                    <span class="response-block">
+                        {{ current_case.get('seek_res', 'No Seek result.')}}
+                    </span>
+                </div>
+                <span class="correct">
+                    {% if current_case.get('seek_correct') == 'True' %}
+                        Correct: ✅
+                    {% elif current_case.get('seek_correct') == 'False' %}
+                        Incorrect: ❌
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setInterval(() => {
+            location.reload(true);
+        }, 3000);
+    </script>
+</body>
+</html>
