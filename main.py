@@ -38,6 +38,8 @@ def print_loading_bar(completed, total, length=40):
 def main():
     base_im_path = "./static/in1-3"
 
+    folder_name = base_im_path.split('/')[-1]
+
     reader = easyocr.Reader(['en'])
     target_paths = get_image_paths(base_im_path)
 
@@ -123,7 +125,7 @@ def main():
             cases_done += 1
             print_loading_bar(cases_done, total_cases)
             requests.post("http://localhost:5000/set_image", data={
-                "path": f'./in1-3/{full_fname}',
+                "path": f'./{folder_name}/{full_fname}',
                 "gpt": gpt_res.output_text.strip(),
                 "seek": seek_res.choices[0].message.content.strip(),
                 "gpt_correct": gpt_correct,

@@ -1,5 +1,6 @@
 import os
 import random
+import argparse
 
 from PIL import Image, ImageEnhance
 from fileutils import get_image_paths
@@ -77,8 +78,8 @@ def save_augments(fname, target_path = './static/in1-3'):
         except Exception as e:
             print(e)
 
-def augment_all():
-    fpaths = get_image_paths('./in2-4')
+def augment_all(in_dir):
+    fpaths = get_image_paths(in_dir)
     for p in fpaths:
         #if on unix like systems change this!
         case_fname = p.split('\\')[-1].split('.')[0]
@@ -86,4 +87,8 @@ def augment_all():
             #print("saving")
             save_augments(p.split('\\')[-1])
 
-augment_all()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Augment images from a directory.")
+    parser.add_argument("input_dir", help="Path to the input directory containing images.")
+    args = parser.parse_args()
+    augment_all(args.input_dir)
